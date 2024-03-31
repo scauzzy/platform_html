@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>ROSbridge Client</title>
+</head>
+<body>
+    <h1>ROSbridge Client</h1>
+    <div id="output"></div>
+
+    <script type="text/javascript">
+        // 创建WebSocket连接到ROSbridge服务器
+        var socket = new WebSocket('ws://localhost:9090');
+
+        // 当连接打开时触发
+        socket.onopen = function(event) {
+            writeToOutput('Connected to ROSbridge server');
+        };
+
+        // 当收到消息时触发
+        socket.onmessage = function(event) {
+            // 解析收到的JSON格式消息
+            var message = JSON.parse(event.data);
+            // 在页面上显示收到的消息
+            writeToOutput('Received message: ' + JSON.stringify(message));
+        };
+
+        // 当连接关闭时触发
+        socket.onclose = function(event) {
+            writeToOutput('Disconnected from ROSbridge server');
+        };
+
+        // 发送消息到ROSbridge服务器
+        function sendToROS(message) {
+            socket.send(JSON.stringify(message));
+            writeToOutput('Sent message: ' + JSON.stringify(message));
+        }
+
+        // 辅助函数：将文本添加到页面输出
+        function writeToOutput(text) {
+            var outputDiv = document.getElementById('output');
+            outputDiv.innerHTML += '<p>' + text + '</p>';
+        }
+    </script>
+</body>
+</html>
